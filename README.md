@@ -1,7 +1,7 @@
 # uvod-v-programiranje
 # Analiza podatkov o diplomskih, magistrskih in doktorskih nalogah
 
-V tem projektu gledamo doktorske disertacije po Univerzi v Ljubljani in Univerzi v Mariboru. Prvi interes je pogledati teorijo, da se sčasoma več in več magistrskih in doktorskih nalog piše v angleščini in manj v slovenščini. Poleg tega bomo analizirali še distribucijo predmetov, spremembe v deležu populacije, ki pridobi doktorat in še kaj drugega.
+V tem projektu gledamo doktorske disertacije po Univerzi v Ljubljani in Univerzi v Mariboru. Prvi interes je pogledati teorijo, da se sčasoma več in več doktorskih nalog piše v angleščini in manj v slovenščini. Poleg tega bomo analizirali še distribucijo predmetov, spremembe v deležu populacije, ki pridobi doktorat in še kaj drugega.
 
 Za bolj zanimivo in zahtevno analizo bomo naredili zemljevid krajev skozi čas, ki kaže popularnost disertacij, objavljenih v tistih krajih.
 
