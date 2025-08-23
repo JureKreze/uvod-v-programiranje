@@ -23,7 +23,7 @@ Ko so podatki naloženi, se nahaja analiza podatkov v Jupyter zvezku v istem oko
 
 ## Znani problemi in opombe
 
-1. ### Čas izvajanja in nastavitve porabe energije
+### 1. Čas izvajanja in nastavitve porabe energije
 
 Ker program traja dolgo (25+ minut) za pobiranje podatkov, je naravno, da uporabnik želi nekam oditi in nekaj drugega početi vmes. To deluje, ampak lahko tudi nastane problem. Namreč, če gre računalnik v sleep ali hibernate mode, program neha delovati in se ukine. Temu se uporabnik lahko izogne preko nastavitev
 ```
@@ -33,15 +33,15 @@ Options -> System -> Power & battery
 
 Pomembno pa je, da uporabnik na laptopu ne zapre svojega laptopa, ker to tudi ukine program. Lahko pa zaklene svoj ekran, kar se na windowsu naredi s pritiskom gumba Windows in L.
 
-2. ### Internetna povezava
+### 2. Internetna povezava
 
 Potrebna je neprekinjena internetna povezava. V posebnem primeru, če ste z računalnikom povezani na mobilne podatke preko hotspota na telefonu, bodite previdni, da ne zapustite prostora s telefonom.
 
-3. ### Zahtevnost programa
+### 3. Zahtevnost programa
 
 Program uporabi precej spomina (zna uporabiti 5.5 GB). To je tudi razlog, da ni hitrejši - lahko bi uporabljal več driverjev in bil hitrejši, ampak bi predvidoma s tem uporabljal več virov. Načeloma 5.5 GB ni prekomerno za modernejše naprave, ampak morda je problem za uporabnike na opremi z manj RAMa in za uporabnike, ki imajo veliko odprtih zavitkov na brskalniku ali delajo kaj drugega v ozadju. 
 
-4. ### Možna nekompatibilnost
+### 4. Možna nekompatibilnost
 Žal je bil program preizkušen le na enem sistemu, zato ne morem zagotoviti zanesljivosti programa na drugih napravah, lahko pa zagotovim, da so podatki vključeni v repozitoriju v .csv datotekah pridobljeni z natanko to kodo, ki je v repozitoriju.
 
 ## Uporaba umetne inteligence
