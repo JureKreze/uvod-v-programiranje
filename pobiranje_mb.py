@@ -2,7 +2,7 @@ import re
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import time
-from male_funkcije import wait_for_css, pocakaj_stran, RUL_iskanje, rul
+from male_funkcije import wait_for_css, pocakaj_stran, DKUM_iskanje, dkum
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from math import ceil
@@ -14,18 +14,19 @@ chrome_options = Options()
 chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--headless=new")
 
+def zadetki(brskalnik):
+    try:
+        st_zadetkov_css = brskalnik.find_element(By.CLASS_NAME, "Stat")
+        st_zadetkov_tekst = st_zadetkov_css.text
+        st_zadetkov = int(st_zadetkov_tekst.split(" / ")[1])
+        return st_zadetkov
+    except NoSuchElementException:
+        return 0
 
-def zadetki(brskalnik) -> int:
-    st_zadetkov_css = wait_for_css(".StZadetkov", brskalnik)
-    st_zadetkov_tekst = st_zadetkov_css.text
-    st_zadetkov = int(st_zadetkov_tekst.split(" ")[0])
-    return st_zadetkov
-
-def preberi_disertacijo(n, leto, brskalnik) -> dict:
+def preberi_disertacijo(n, leto, brskalnik):
     disertacija = dict()
-    naslov = brskalnik.find_element(By.CSS_SELECTOR, f"body > div.platno >\
-                                     section.zadetki > div > table > tbody > tr:nth-child({n}) > td > div > a:nth-child(2)")
-
+    naslov = brskalnik.find_element(By.CSS_SELECTOR, f"body > div.platno.tex2jax_ignore > section > form > div >\
+                                    table.ZadetkiIskanja.tex2jax_do > tbody > tr:nth-child({n}) > td > div.Besedilo > a:nth-child(1)")
     naslov_disertacije = str(naslov.text)
     disertacija["Naslov"] = naslov_disertacije
     naslov.send_keys(Keys.RETURN)
@@ -68,32 +69,14 @@ def preberi_disertacijo(n, leto, brskalnik) -> dict:
         komentorji = []
     disertacija["Komentorji"] = komentorji if komentorji else []
 
-    try:
-        dolzina_element = brskalnik.find_element(By.XPATH, "//tr[th[contains(normalize-space(), 'Št. strani:')]]/td[last()]")
-        dolzina = str(dolzina_element.text)
-    except NoSuchElementException:
-        dolzina = "0"
-    
-    #regex za izluščanje dolžino uvoda in dolžino glavnega dela disertacije. Odločil sem se, da dolžina zaključka ni tako zanimiva.
-    vzorec = re.compile(r'([IVXLCDM]+),\s(\d+)')
-    dolzina_regex = vzorec.match(dolzina)
-    if dolzina_regex:
-        dolzina_uvoda = rimske(dolzina_regex.group(1)) if dolzina_regex.group(1) else 0
-        dolzina_glavnega_dela = int(dolzina_regex.group(2)) if dolzina_regex.group(2) else 0
-    else:
-        dolzina_uvoda = 0
-        dolzina_glavnega_dela = 0
-
-    disertacija["dolzina_uvoda"] = dolzina_uvoda
-    disertacija["dolzina_glavnega_dela"] = dolzina_glavnega_dela
     return disertacija
 
-čas_začetka = time.time()
-def poberi(brskalnik, leta_za_pobiranje, rezultat):
+def poberi_mb(brskalnik, leta_za_pobiranje, rezultat):
     for leto in leta_za_pobiranje:
-        brskalnik.get(rul)
+        brskalnik.get(dkum)
         pocakaj_stran(brskalnik)
-        RUL_iskanje(leto, brskalnik)
+        DKUM_iskanje(leto, brskalnik)
+        pocakaj_stran(brskalnik)
         st_zadetkov = zadetki(brskalnik)
         st_strani = ceil(st_zadetkov / 10)
         #print(f"Iskanje za leto {leto} je našlo {st_zadetkov} zadetkov, kar je {st_strani} strani.")
@@ -119,7 +102,7 @@ def poberi(brskalnik, leta_za_pobiranje, rezultat):
 def delavec(leta_za_pobiranje, rezultat):
     driver_thread = webdriver.Chrome(options=chrome_options)
     try:
-        poberi(driver_thread, leta_za_pobiranje, rezultat)
+        poberi_mb(driver_thread, leta_za_pobiranje, rezultat)
     finally:
         driver_thread.quit()
 
@@ -128,7 +111,7 @@ leta2 = [2014 + i for i in range(11)]
 rezultat1 = list()
 rezultat2 = list()
 
-def delaj() -> list:
+def delaj_mb():
     thread1 = threading.Thread(target=delavec, args=(leta1, rezultat1,))
     thread2 = threading.Thread(target=delavec, args=(leta2, rezultat2,))
     thread1.start()

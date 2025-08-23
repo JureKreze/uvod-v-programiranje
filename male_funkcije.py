@@ -1,0 +1,138 @@
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import Select
+from selenium.webdriver.common.keys import Keys
+import csv
+import selenium
+
+rul = "https://repozitorij.uni-lj.si/Iskanje.php?type=napredno&lang=slv"
+dkum = "https://dk.um.si/Iskanje.php?type=napredno&lang=slv"
+
+def wait_for_css(css_selector, brskalnik, timeout=10):
+    try:
+        return WebDriverWait(brskalnik, timeout).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_selector)))
+    except selenium.common.exceptions.TimeoutException:
+        return None
+
+def wait_for_xpath(xpath, brskalnik, timeout=10):
+    try:
+        return WebDriverWait(brskalnik, timeout).until(EC.presence_of_element_located((By.XPATH, xpath)))
+    except selenium.common.exceptions.TimeoutException:
+        return None
+
+def pocakaj_stran(brskalnik, timeout=10):
+    WebDriverWait(brskalnik, 10).until(lambda x: x.execute_script("return document.readyState") == "complete")
+
+
+def RUL_iskanje(leto, brskalnik):
+    vnos_leta = wait_for_css("input.IskalniNiz[name='niz3']", brskalnik)
+    seznam_vrst_gradiv = brskalnik.find_element(By.CSS_SELECTOR, "#vrsta")
+    vnos_leta.send_keys(str(leto))
+    select = Select(seznam_vrst_gradiv)
+    select.select_by_visible_text("Doktorska disertacija")
+    gumb_isci = brskalnik.find_element(By.XPATH, "/html/body/div[3]/section[1]/div/form/table/tbody/tr[7]/td[3]/a")
+    gumb_isci.send_keys(Keys.RETURN)
+
+def DKUM_iskanje(leto, brskalnik):
+    vnos_leta = wait_for_css("input.IskalniNiz[name='niz3']", brskalnik)
+    seznam_vrst_gradiv = brskalnik.find_element(By.CSS_SELECTOR, "#vrsta")
+    vnos_leta.send_keys(str(leto))
+    select = Select(seznam_vrst_gradiv)
+    select.select_by_visible_text("Doktorska disertacija * (dok)")
+    gumb_isci = brskalnik.find_element(By.CSS_SELECTOR, "body > div.platno.tex2jax_ignore > section > form > div > table > tbody > tr:nth-child(9) > td:nth-child(2) > input:nth-child(1)")
+    gumb_isci.send_keys(Keys.RETURN)
+
+def shrani_disertacije(disertacije):
+    with open("disertacije_lj.csv", "w", newline='', encoding="utf-8") as f:
+        pisatelj = csv.writer(f, delimiter="|")
+        pisatelj.writerow(
+            [
+                "ID",
+                "Naslov",
+                "Avtor",
+                "Mentor",
+                "Ključne besede",
+                "Leto",
+                "Jezik",
+                "Organizacija",
+                "Kraj",
+                "Dolžina uvoda",
+                "Dolžina glavnega dela",
+                "Ogledi",
+                "Prenosi",
+            ]
+        )
+        for disertacija in disertacije:
+            pisatelj.writerow(
+                [
+                    disertacija["ID"],
+                    disertacija["Naslov"],
+                    disertacija["Avtor"],
+                    disertacija["Mentor"],
+                    disertacija["Ključne besede"],
+                    disertacija["Leto izida"],
+                    disertacija["Jezik"],
+                    disertacija["Organizacija"],
+                    disertacija["Kraj izida"],
+                    disertacija["dolzina_uvoda"],
+                    disertacija["dolzina_glavnega_dela"],
+                    disertacija["Število ogledov"],
+                    disertacija["Število prenosov"],
+                ]
+            )
+
+def shrani_disertacije_maribor(disertacije):
+    with open(f"disertacije_maribor.csv", "w", newline='', encoding="utf-8") as f:
+        pisatelj = csv.writer(f, delimiter="|")
+        pisatelj.writerow(
+            [
+                "ID",
+                "Naslov",
+                "Avtor",
+                "Mentor",
+                "Ključne besede",
+                "Leto",
+                "Jezik",
+                "Organizacija",
+                "Kraj",
+                "Ogledi",
+                "Prenosi",
+            ]
+        )
+        for disertacija in disertacije:
+            pisatelj.writerow(
+                [
+                    disertacija["ID"],
+                    disertacija["Naslov"],
+                    disertacija["Avtor"],
+                    disertacija["Mentor"],
+                    disertacija["Ključne besede"],
+                    disertacija["Leto izida"],
+                    disertacija["Jezik"],
+                    disertacija["Organizacija"],
+                    disertacija["Kraj izida"],
+                    disertacija["Število ogledov"],
+                    disertacija["Število prenosov"],
+                ]
+            )
+
+def shrani_komentorje(disertacije, stran):
+    with open(f"disertacije_komentorji_{stran}.csv", "w", newline='', encoding="utf-8") as f:
+        pisatelj = csv.writer(f, delimiter="|")
+        pisatelj.writerow(
+            [
+                "Ime in priimek", #tu bi bilo bolje imeti ID, ker imata 2 osebi lahko enako ime in priimek
+            ]
+        )
+        ze_videni = set()
+        for disertacija in disertacije:
+            for oseba in disertacija["Komentorji"]:
+                if oseba in ze_videni or oseba == "Več o mentorju..." or oseba == "ID":
+                    continue
+                ze_videni.add(oseba)
+                pisatelj.writerow(
+                    [
+                        oseba,
+                    ]
+                )
