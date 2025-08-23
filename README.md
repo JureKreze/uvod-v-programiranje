@@ -19,6 +19,23 @@ ko imate repozitorij naložen na računalniku. Morda morate narediti in aktivira
 
 Za pobiranje podatkov zaženite program main.py in dovolite, da nekaj časa deluje. Ker sem uporabil dva Selenium driverja brez requests, je proces dokaj počasen, realističen čas čakanja pa je okoli 20-40 minut. Za uporabo morate imeti naložen brskalnik Google Chrome ali pa spremeniti brskalnik na enega izmed Selenium podprtih brskalnikov Edge, Firefox, Internet Explorer ali Safari. **Opozarjam, da sem zajem podatkov storil z Google Chrome, torej ne morem zagotoviti, da bo program deloval z drugimi brskalniki.**
 
+Za zagon programa, se navigirajte v ukazni vrstici do repozitorija in zaženite pridobivanje podatkov z enim od sledečih načinov:
+### 1. Pridobivanje podatkov z RUL in DKUM hkrati (hitrejše, uporabi več RAM-a)
+V eno ukazno vrstico vpišite
+```
+python main.py ljubljana
+```
+V drugi pa
+```
+python main.py maribor
+```
+
+### 2. Pridobivanje podatkov z RUL, potem pa iz DKUM (počasneje, uporabi manj RAM-a)
+V ukazno vrstico vpišite
+```
+python main.py
+```
+
 Ko so podatki naloženi, se nahaja analiza podatkov v Jupyter zvezku v istem okolju.
 
 ## Znani problemi in opombe
