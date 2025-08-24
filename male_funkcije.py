@@ -28,6 +28,7 @@ def pocakaj_stran(brskalnik, timeout=10):
 def RUL_iskanje(leto, brskalnik):
     vnos_leta = wait_for_css("input.IskalniNiz[name='niz3']", brskalnik)
     seznam_vrst_gradiv = brskalnik.find_element(By.CSS_SELECTOR, "#vrsta")
+    vnos_leta.clear()
     vnos_leta.send_keys(str(leto))
     select = Select(seznam_vrst_gradiv)
     select.select_by_visible_text("Doktorska disertacija")

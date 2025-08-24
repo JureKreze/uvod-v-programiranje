@@ -105,7 +105,7 @@ def poberi(brskalnik, leta_za_pobiranje, rezultat):
                     try:
                         rezultat.append(preberi_disertacijo(zadetek, leto, brskalnik))
                     except NoSuchElementException:
-                        break
+                        continue
                     brskalnik.back()
                     st_obdelanih += 1
                 else:
@@ -125,10 +125,11 @@ def delavec(leta_za_pobiranje, rezultat):
 
 leta1 = [2000 + i for i in range(14)]
 leta2 = [2014 + i for i in range(11)]
-rezultat1 = list()
-rezultat2 = list()
+
 
 def delaj() -> list:
+    rezultat1 = list()
+    rezultat2 = list()
     thread1 = threading.Thread(target=delavec, args=(leta1, rezultat1,))
     thread2 = threading.Thread(target=delavec, args=(leta2, rezultat2,))
     thread1.start()

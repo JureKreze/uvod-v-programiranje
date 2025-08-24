@@ -1,4 +1,5 @@
 import re
+import selenium
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 import time
@@ -6,7 +7,6 @@ from male_funkcije import wait_for_css, pocakaj_stran, DKUM_iskanje, dkum
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from math import ceil
-from roman import fromRoman as rimske
 from selenium.webdriver.chrome.options import Options
 import threading
 
@@ -16,17 +16,18 @@ chrome_options.add_argument("--headless=new")
 
 def zadetki(brskalnik):
     try:
+        pocakaj_stran(brskalnik)
         st_zadetkov_css = brskalnik.find_element(By.CLASS_NAME, "Stat")
         st_zadetkov_tekst = st_zadetkov_css.text
         st_zadetkov = int(st_zadetkov_tekst.split(" / ")[1])
         return st_zadetkov
-    except NoSuchElementException:
-        return 0
+    except (NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
+        return zadetki(brskalnik)
 
 def preberi_disertacijo(n, leto, brskalnik):
     disertacija = dict()
-    naslov = brskalnik.find_element(By.CSS_SELECTOR, f"body > div.platno.tex2jax_ignore > section > form > div >\
-                                    table.ZadetkiIskanja.tex2jax_do > tbody > tr:nth-child({n}) > td > div.Besedilo > a:nth-child(1)")
+    naslov = wait_for_css(f"body > div.platno.tex2jax_ignore > section > form > div >\
+                                    table.ZadetkiIskanja.tex2jax_do > tbody > tr:nth-child({n}) > td > div.Besedilo > a:nth-child(1)", brskalnik)
     naslov_disertacije = str(naslov.text)
     disertacija["Naslov"] = naslov_disertacije
     naslov.send_keys(Keys.RETURN)
@@ -88,8 +89,9 @@ def poberi_mb(brskalnik, leta_za_pobiranje, rezultat):
                     try:
                         rezultat.append(preberi_disertacijo(zadetek, leto, brskalnik))
                     except NoSuchElementException:
-                        break
+                        continue
                     brskalnik.back()
+                    pocakaj_stran(brskalnik)
                     st_obdelanih += 1
                 else:
                     break
@@ -104,14 +106,16 @@ def delavec(leta_za_pobiranje, rezultat):
     try:
         poberi_mb(driver_thread, leta_za_pobiranje, rezultat)
     finally:
+        time.sleep(2)
         driver_thread.quit()
 
-leta1 = [2000 + i for i in range(14)]
+leta1 = [2000, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013]
 leta2 = [2014 + i for i in range(11)]
-rezultat1 = list()
-rezultat2 = list()
+
 
 def delaj_mb():
+    rezultat1 = list()
+    rezultat2 = list()
     thread1 = threading.Thread(target=delavec, args=(leta1, rezultat1,))
     thread2 = threading.Thread(target=delavec, args=(leta2, rezultat2,))
     thread1.start()
