@@ -75,7 +75,7 @@ def preberi_disertacijo(n, leto, brskalnik) -> dict:
         dolzina = "0"
     
     #regex za izluščanje dolžino uvoda in dolžino glavnega dela disertacije. Odločil sem se, da dolžina zaključka ni tako zanimiva.
-    vzorec = re.compile(r'([IVXLCDM]+),\s(\d+)')
+    vzorec = re.compile(r'([IVXLCDM]+)?,?\s?([0-9]+)?')
     dolzina_regex = vzorec.match(dolzina)
     if dolzina_regex:
         dolzina_uvoda = rimske(dolzina_regex.group(1)) if dolzina_regex.group(1) else 0
@@ -123,8 +123,8 @@ def delavec(leta_za_pobiranje, rezultat):
     finally:
         driver_thread.quit()
 
-leta1 = [2000 + i for i in range(14)]
-leta2 = [2014 + i for i in range(11)]
+leta1 = [2000 + _ for _ in range(16)]
+leta2 = [2016 + _ for _ in range(9)]
 
 
 def delaj() -> list:
