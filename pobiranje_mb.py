@@ -21,20 +21,25 @@ chrome_options.add_argument("--headless=new")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.page_load_strategy = 'eager'
-# Nastavitve za hitrejše delovanje Seleniuma. OPOMBA: Headless način včasih povzroča nestabilnost programa.
+# Nastavitve za hitrejše delovanje Seleniuma. OPOMBA: Headless način včasih povzroča \
+# nestabilnost programa.
 
 
 def zadetki(brskalnik) -> int:
     '''Pridobi število zadetkov iskanja na DKUM. Uporabimo kasneje, da vemo, kdaj nehati.'''
     try:
         pocakaj_stran(brskalnik)
-        st_zadetkov_css = WebDriverWait(brskalnik, 10).until(EC.presence_of_element_located((By.CLASS_NAME, "Stat")))
+        st_zadetkov_css = WebDriverWait(brskalnik, 10).until(
+            EC.presence_of_element_located((By.CLASS_NAME, "Stat"))
+        )
         st_zadetkov_tekst = st_zadetkov_css.text
         st_zadetkov = int(st_zadetkov_tekst.split(" / ")[1])
         return st_zadetkov
     except (NoSuchElementException, selenium.common.exceptions.StaleElementReferenceException):
-        # Precej nevaren exception, ampak pri vsakem iskanju mora biti število zadetkov, včasih se mora samo ponoviti.
-        # Te izjeme ni pri isti funkciji za RUL, ker je tista stran bolj stabilna in po izkušnjah lažja za obravnavanje.
+        # Precej nevaren exception, ampak pri vsakem iskanju mora biti število zadetkov,
+        # včasih se mora samo ponoviti.
+        # Te izjeme ni pri isti funkciji za RUL, ker je tista stran bolj stabilna in po
+        # izkušnjah lažja za obravnavanje.
         return zadetki(brskalnik)
 
 
@@ -62,7 +67,8 @@ def preberi_disertacijo(
     vzorec_id = re.compile(r'id=([0-9]+)')
     id = vzorec_id.search(povezava).group(1)
     disertacija["ID"] = id
-    # Ker pridobivamo podatke iz tabele, lahko uporabimo zanko za večino podatkov. Izjeme so ročno izluščene.
+    # Ker pridobivamo podatke iz tabele, lahko uporabimo zanko za večino podatkov.
+    # Izjeme so ročno izluščene.
     stvari_za_iskati = [
         "Jezik",
         "Organizacija",
@@ -76,7 +82,8 @@ def preberi_disertacijo(
         "Mentor"
     ]
     for stvar in stvari_za_iskati:
-        # Stvari iščemo po relativnem XPATH-u, specifično vrstica, ki ima naslov, ki vsebuje podatek, ki ga iščemo.
+        # Stvari iščemo po relativnem XPATH-u, specifično vrstica, ki ima naslov, ki
+        # vsebuje podatek, ki ga iščemo.
         try:
             stvar_element = brskalnik.find_element(By.XPATH,
             f"//tr[th[contains(normalize-space(),\
@@ -123,7 +130,6 @@ def poberi_mb(
         pocakaj_stran(brskalnik)
         st_zadetkov = zadetki(brskalnik)
         st_strani = ceil(st_zadetkov / 10)
-        #print(f"Iskanje za leto {leto} je našlo {st_zadetkov} zadetkov, kar je {st_strani} strani.")
         st_obdelanih = 0
         for stran in range(1, st_strani + 1):
             for zadetek in range(1, 11):
@@ -159,8 +165,10 @@ def delavec(
 
 leta1 = [2000, 2003, 2004, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013]
 leta2 = [2014 + i for i in range(11)]
-# Leta1 so leta od 2000 do 2013, ki jih pridobi prvi delavec. Nekaterih let ni, ker tista leta niso imela disertacij. Drugi delavec pridobi ostale do 2024.
-# Ta števila sem zbral tako, ker je več disertacij v drugi polovici let in želimo, da končata približno istočasno.
+# Leta1 so leta od 2000 do 2013, ki jih pridobi prvi delavec. Nekaterih let ni, ker
+# tista leta niso imela disertacij. Drugi delavec pridobi ostale do 2024.
+# Ta števila sem zbral tako, ker je več disertacij v drugi polovici let in želimo, da \
+# končata približno istočasno.
 
 
 def delaj_mb() -> list[dict]:

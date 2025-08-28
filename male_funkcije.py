@@ -20,7 +20,9 @@ def wait_for_css(
 ) -> WebElement | None:
     '''Čaka, da se element z določenim CSS selektorjem pojavi na strani, potem ga vrne.'''
     try:
-        return WebDriverWait(brskalnik, timeout).until(EC.presence_of_element_located((By.CSS_SELECTOR, css_selector)))
+        return WebDriverWait(brskalnik, timeout).until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, css_selector))
+        )
     except selenium.common.exceptions.TimeoutException:
         return None
 
@@ -32,7 +34,9 @@ def wait_for_xpath(
 ) -> WebElement | None:
     '''Čaka, da se element z določenim XPATH selektorjem pojavi na strani, potem ga vrne.'''
     try:
-        return WebDriverWait(brskalnik, timeout).until(EC.presence_of_element_located((By.XPATH, xpath)))
+        return WebDriverWait(brskalnik, timeout).until(EC.presence_of_element_located(
+            (By.XPATH, xpath))
+        )
     except selenium.common.exceptions.TimeoutException:
         return None
 
@@ -42,7 +46,9 @@ def pocakaj_stran(
     timeout: int = 10
 ) -> None:
     '''Počaka, da se stran naloži.'''
-    WebDriverWait(brskalnik, timeout).until(lambda x: x.execute_script("return document.readyState") == "complete")
+    WebDriverWait(brskalnik, timeout).until(lambda x: x.execute_script(
+        "return document.readyState") == "complete"
+    )
 
 
 def RUL_iskanje(
@@ -56,7 +62,9 @@ def RUL_iskanje(
     vnos_leta.send_keys(str(leto))
     select = Select(seznam_vrst_gradiv)
     select.select_by_visible_text("Doktorska disertacija")
-    gumb_isci = brskalnik.find_element(By.XPATH, "/html/body/div[3]/section[1]/div/form/table/tbody/tr[7]/td[3]/a")
+    gumb_isci = brskalnik.find_element(
+        By.XPATH, "/html/body/div[3]/section[1]/div/form/table/tbody/tr[7]/td[3]/a"
+    )
     gumb_isci.send_keys(Keys.RETURN)
 
 def DKUM_iskanje(
@@ -164,9 +172,9 @@ def shrani_komentorje(
         pisatelj = csv.writer(f, delimiter="|")
         pisatelj.writerow(
             [
-                "Ime in priimek", #tu bi bilo bolje imeti ID, ker imata 2 osebi lahko enako ime in priimek
+                "Ime in priimek",
             ]
-        )
+        )  # tu bi bilo bolje imeti ID, ker imata 2 osebi lahko enako ime in priimek
         ze_videni = set()
         for disertacija in disertacije:
             for oseba in disertacija["Komentorji"]:
