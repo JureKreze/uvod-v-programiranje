@@ -9,8 +9,8 @@ from selenium.webdriver.remote.webelement import WebElement
 from selenium import webdriver
 
 
-rul = "https://repozitorij.uni-lj.si/Iskanje.php?type=napredno&lang=slv"
-dkum = "https://dk.um.si/Iskanje.php?type=napredno&lang=slv"
+RUL = "https://repozitorij.uni-lj.si/Iskanje.php?type=napredno&lang=slv"
+DKUM = "https://dk.um.si/Iskanje.php?type=napredno&lang=slv"
 
 
 def wait_for_css(
@@ -119,8 +119,8 @@ def shrani_disertacije(disertacije: list[dict]) -> None:
 
 
 def shrani_disertacije_maribor(disertacije: list[dict]) -> None:
-    '''Shrani podatke o disertacijah iz Maribora v disertacije_maribor.csv.'''
-    with open(f"disertacije_maribor.csv", "w", newline='', encoding="utf-8") as f:
+    '''Shrani podatke o disertacijah iz Maribora v disertacije_mb.csv.'''
+    with open("disertacije_mb.csv", "w", newline='', encoding="utf-8") as f:
         pisatelj = csv.writer(f, delimiter="|")
         pisatelj.writerow(
             [
@@ -160,7 +160,7 @@ def shrani_komentorje(
     stran: int
 ) -> None:
     '''Shrani podatke o komentorjih disertacij v disertacije_komentorji_{stran}.csv.'''
-    with open(f"disertacije_komentorji_{stran}.csv", "w", newline='', encoding="utf-8") as f:
+    with open(f"disertacije_osebe_{stran}.csv", "w", newline='', encoding="utf-8") as f:
         pisatelj = csv.writer(f, delimiter="|")
         pisatelj.writerow(
             [

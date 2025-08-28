@@ -9,7 +9,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from roman import fromRoman as rimske
 
-from male_funkcije import wait_for_css, pocakaj_stran, RUL_iskanje, rul
+from male_funkcije import wait_for_css, pocakaj_stran, RUL_iskanje, RUL
 
 
 chrome_options = Options()
@@ -63,7 +63,7 @@ def preberi_disertacijo(
         "Mentor"
     ]
     for stvar in stvari_za_iskati:
-        # Stvari iščemo po relativnem XPATH-u, specifično vrstica, ki ima naslov, ki vsebuje podatek, ki ga iščemo.     
+        # Stvari iščemo po relativnem XPATH-u, specifično vrstica, ki ima naslov, ki vsebuje podatek, ki ga iščemo.
         try:
             stvar_element = brskalnik.find_element(By.XPATH,
     f"//tr[th[contains(normalize-space(), '{stvar}:')]]\
@@ -101,7 +101,7 @@ def preberi_disertacijo(
         dolzina = str(dolzina_element.text)
     except NoSuchElementException:
         dolzina = "0"
-    
+
     # Regex za izluščanje dolžine uvoda in dolžine glavnega dela disertacije.
     vzorec = re.compile(r'([IVXLCDM]+)?,?\s?([0-9]+)?')
     dolzina_regex = vzorec.match(dolzina)
@@ -124,7 +124,7 @@ def poberi(
 ) -> None:
     '''Združi iskanje in izluščanje rezultatov, jih shrani v rezultate od posamezne niti.'''
     for leto in leta_za_pobiranje:
-        brskalnik.get(rul)
+        brskalnik.get(RUL)
         pocakaj_stran(brskalnik)
         RUL_iskanje(leto, brskalnik)
         st_zadetkov = zadetki(brskalnik)

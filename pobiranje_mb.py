@@ -12,7 +12,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-from male_funkcije import wait_for_css, pocakaj_stran, DKUM_iskanje, dkum
+from male_funkcije import wait_for_css, pocakaj_stran, DKUM_iskanje, DKUM
 
 
 chrome_options = Options()
@@ -36,7 +36,7 @@ def zadetki(brskalnik) -> int:
         # Precej nevaren exception, ampak pri vsakem iskanju mora biti število zadetkov, včasih se mora samo ponoviti.
         # Te izjeme ni pri isti funkciji za RUL, ker je tista stran bolj stabilna in po izkušnjah lažja za obravnavanje.
         return zadetki(brskalnik)
-    
+
 
 def preberi_disertacijo(
     n: int,
@@ -76,7 +76,7 @@ def preberi_disertacijo(
         "Mentor"
     ]
     for stvar in stvari_za_iskati:
-        # Stvari iščemo po relativnem XPATH-u, specifično vrstica, ki ima naslov, ki vsebuje podatek, ki ga iščemo.    
+        # Stvari iščemo po relativnem XPATH-u, specifično vrstica, ki ima naslov, ki vsebuje podatek, ki ga iščemo.
         try:
             stvar_element = brskalnik.find_element(By.XPATH,
             f"//tr[th[contains(normalize-space(),\
@@ -117,7 +117,7 @@ def poberi_mb(
 ) -> None:
     '''Združi iskanje in izluščanje rezultatov z DKUM, jih shrani v rezultate od posamezne niti.'''
     for leto in leta_za_pobiranje:
-        brskalnik.get(dkum)
+        brskalnik.get(DKUM)
         pocakaj_stran(brskalnik)
         DKUM_iskanje(leto, brskalnik)
         pocakaj_stran(brskalnik)
